@@ -1,6 +1,18 @@
 # FetchTakeHome
 
-## Example List
+## Product Requirements
+
+Display this list of items to the user based on the following requirements:
+
+- Display all the items grouped by "listId"
+- Sort the results first by "listId" then by "name" when displaying.
+- Filter out any items where "name" is blank or null.
+- The final result should be displayed to the user in an easy-to-read list.
+
+Please make the project buildable on the latest (non-pre release) tools and supporting the current
+release mobile OS.
+
+## Example DataSet
 
 ```json
 [
@@ -13,19 +25,56 @@
     "id": 276,
     "listId": 1,
     "name": "Item 276"
+  },
+  {
+    "id": null,
+    "listId": 1,
+    "nme": null
   }
 ]
 ```
 
-Display this list of items to the user based on the following requirements:
+## Getting Started
 
-- Display all the items grouped by "listId"
-- Sort the results first by "listId" then by "name" when displaying.
-- Filter out any items where "name" is blank or null.
-- The final result should be displayed to the user in an easy-to-read list.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Please make the project buildable on the latest (non-pre release) tools and supporting the current
-release mobile OS.
+### Prerequisites
+
+- Android Studio Jellyfish | 2023.3.1 Patch 1 or later
+- Git
+- JDK 11 or newer
+
+### Cloning the Repository
+
+1. Open a terminal.
+2. Change the current working directory to the location where you want the cloned directory.
+3. Type `git clone git@github.com:BryanKAdams/FetchTakeHome.git` and press **Enter** to create your local clone.
+
+### Building the Project
+
+1. Open Android Studio.
+2. Select `File` > `Open...` from the menu bar.
+3. Navigate to the directory where you cloned the project, select it, and click `OK`.
+4. Android Studio will import the project and index its contents.
+5. Once the indexing and Gradle sync are complete, select `Build` > `Make Project` to build the app.
+6. To run the app, select `Run` > `Run 'app'` and choose an emulator or connected device.
+
+### Running Tests
+
+1. To run unit tests, right-click on the `test` folder in the Project view and select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
+2. To run Android Instrumentation tests, right-click on the `androidTest` folder and select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
+
+### Generating APK
+
+1. Select `Build` > `Build Bundle(s) / APK(s)` > `Build APK(s)`.
+2. Once the build is complete, Android Studio will notify you. The APK can be found in `projectname/app/build/outputs/apk/debug/app-debug.apk`.
+
+### Installing APK on a Device
+
+1. Enable USB debugging on your Android device.
+2. Connect your device to your development machine via USB.
+3. Open a terminal and navigate to the project's root directory.
+4. Run `./gradlew installDebug` to install the debug APK on your device.
 
 ## Developer Notes:
 
