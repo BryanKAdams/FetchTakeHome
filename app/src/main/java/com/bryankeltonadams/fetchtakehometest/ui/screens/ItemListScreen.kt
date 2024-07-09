@@ -9,16 +9,21 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bryankeltonadams.fetchtakehometest.model.Item
+import java.util.SortedMap
 
 @Composable
-fun ItemListScreen() {
-    ItemListScreen(ItemListScreenUiState())
+fun ItemListScreen(itemListScreenViewModel: ItemListScreenViewModel) {
+    val uiState by
+    itemListScreenViewModel.itemListScreenUiState.collectAsStateWithLifecycle()
+    ItemListScreen(itemListScreenUiState = uiState)
 }
 
 data class ItemListScreenUiState(
-    val sectionedItems: Map<Int, List<Item>>? = null,
+    val sectionedItems: SortedMap<Int, List<Item>>? = null,
     val isLoading: Boolean = true,
     val error: String? = null,
 )

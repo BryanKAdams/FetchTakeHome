@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Item(
     val id: Int? = null,
     val name: String? = null,
-    val listId: Int? = null,
+    val listId: Int,
 )
