@@ -7,11 +7,14 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -41,16 +44,22 @@ object NetworkModule {
             .build()
     }
 
+    // I am just as familiar with Retrofit but have been using
+    // Ktor on personal projects due to KMP compatibility
     @Singleton
     @Provides
-    fun provideHttpClient():HttpClient{
-        return HttpClient(OkHttp){
-            install(Logging){
-                level= LogLevel.ALL
+    fun provideHttpClient(): HttpClient {
+        return HttpClient(OkHttp) {
+            install(Logging) {
+                level = LogLevel.ALL
             }
-            install(DefaultRequest){
-                url("https://fetch-hiring.s3.amazonaws.com/mobile.html")
+            install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
+            }
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                })
             }
         }
     }

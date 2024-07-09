@@ -2,59 +2,89 @@ package com.bryankeltonadams.fetchtakehometest.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bryankeltonadams.fetchtakehometest.data.items.IItemsRepository
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.SortedMap
+import javax.inject.Inject
 
-class ItemListScreenViewModel : IItemListScreenViewModel, ViewModel() {
+@HiltViewModel
+class ItemListScreenViewModel @Inject constructor(
+    private val itemRepository: IItemsRepository,
+) : IItemListScreenViewModel, ViewModel() {
 
     private val _itemListScreenUiState = MutableStateFlow(ItemListScreenUiState())
     override val itemListScreenUiState = _itemListScreenUiState.asStateFlow()
-    override fun loadItems() {
+
+    override fun fetchAndHandleItemsResult() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val dummyItems = listOf(
-                    Item(id = 755, listId = 2, name = ""),
-                    Item(id = 203, listId = 2, name = ""),
-                    Item(id = 684, listId = 1, name = "Item 684"),
-                    Item(id = 276, listId = 1, name = "Item 276"),
-                    Item(id = 736, listId = 3, name = null),
-                    Item(id = 926, listId = 4, name = null),
-                    Item(id = 808, listId = 4, name = "Item 808"),
-                    Item(id = 599, listId = 1, name = null),
-                    Item(id = 424, listId = 2, name = null),
-                    Item(id = 444, listId = 1, name = ""),
-                    Item(id = 809, listId = 3, name = null),
-                    Item(id = 293, listId = 2, name = null),
-                    Item(id = 510, listId = 2, name = null),
-                    Item(id = 680, listId = 3, name = "Item 680"),
-                    Item(id = 231, listId = 2, name = null),
-                    Item(id = 534, listId = 4, name = "Item 534"),
-                )
-                val sortedItems = dummyItems.sortedBy { it.name }
-                val groupedItems = sortedItems.groupBy { it.listId }.toSortedMap(
-                    compareBy { it }
-                )
-                _itemListScreenUiState.value = ItemListScreenUiState(
-                    sectionedItems = groupedItems,
+            // ktor functions are non blocking so we should not need
+            // to use Dispatchers.IO
+            val itemsResult = itemRepository.getNetworkItems()
+            handleItemsResult(itemsResult)
+        }
+    }
+
+    private fun filterItems(items: List<Item>): List<Item> {
+        return items.filter { !it.name.isNullOrBlank() }
+    }
+
+    override fun createSortedMap(items: List<Item>): SortedMap<Int, List<Item>> {
+        val sortedItems = items.sortedBy { it.name }
+        val groupedItems = sortedItems.groupBy { it.listId }.toSortedMap(
+            compareBy { it }
+        )
+        return groupedItems
+    }
+
+    override suspend fun handleItemsResult(itemsResult: Result<List<Item>>?) {
+        if (itemsResult != null) {
+            if (itemsResult.isSuccess) {
+                val items = itemsResult.getOrNull()
+                if (items != null) {
+                    val groupedItems = createSortedMap(filterItems(items))
+                    _itemListScreenUiState.update {
+                        it.copy(
+                            isLoading = false,
+                            sectionedItems = groupedItems
+                        )
+                    }
+                } else {
+                    _itemListScreenUiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = itemsResult.exceptionOrNull()?.message
+                        )
+                    }
+                }
+            }
+        } else {
+            _itemListScreenUiState.update {
+                it.copy(
                     isLoading = false,
-                    error = null
+                    error = "Error fetching items"
                 )
             }
         }
     }
 
     init {
-        loadItems()
+        fetchAndHandleItemsResult()
     }
 }
 
 interface IItemListScreenViewModel {
     val itemListScreenUiState: StateFlow<ItemListScreenUiState>
-    fun loadItems()
+    fun fetchAndHandleItemsResult()
+
+    fun createSortedMap(items: List<Item>): SortedMap<Int, List<Item>>
+
+    suspend fun handleItemsResult(itemsResult: Result<List<Item>>?)
+
 }
 

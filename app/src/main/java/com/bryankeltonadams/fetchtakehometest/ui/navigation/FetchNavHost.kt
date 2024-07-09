@@ -1,6 +1,7 @@
 package com.bryankeltonadams.fetchtakehometest.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +24,8 @@ fun FetchNavHost(navHostController: NavHostController = rememberNavController())
     ) {
         composable<ItemList> {
             // move to dependency injection if time permits
-            ItemListScreen(ItemListScreenViewModel())
+            val filterViewModel = hiltViewModel<ItemListScreenViewModel>()
+            ItemListScreen(filterViewModel)
         }
     }
 }
