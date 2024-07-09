@@ -15,6 +15,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 object ItemList
 
+// Compose Navigation is overkill for this project but I wanted to demonstrate it
+// and also allow the flexibility to easily implement a detail screen or anything else.
+// i.e. it's not overkill, it's just planned architecture to allow the app to scale.
+
 @Composable
 fun FetchNavHost(navHostController: NavHostController = rememberNavController()) {
     NavHost(
