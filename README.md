@@ -42,7 +42,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Android Studio Jellyfish | 2023.3.1 Patch 1 or later
 - Git
-- JDK 11 or newer
+- JDK 11 or newer (recommended for development, although the project targets JVM 1.8)
 
 ### Cloning the Repository
 
