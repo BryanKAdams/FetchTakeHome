@@ -25,6 +25,9 @@ import com.bryankeltonadams.fetchtakehometest.R
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
 
 @Composable
+// some code bases name this function ItemListRoute, since it's composable that lives
+// within the navigation graph and pulls the data and actions from the view model
+// I prefer to just use the same name but a different signature
 fun ItemListScreen(itemListScreenViewModel: ItemListScreenViewModel) {
     val uiState by itemListScreenViewModel.itemListScreenUiState.collectAsStateWithLifecycle()
     ItemListScreen(
