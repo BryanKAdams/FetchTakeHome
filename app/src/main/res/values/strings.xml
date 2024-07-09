@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Fetch Take Home Test</string>
+
+    <!--   I would consider using %1$s for even the IDs if there was a chance
+    that it could be a string instead. %1$s is flexible and you can still pass in
+    a number or string.
+     -->
+    <string name="list_header_title">List %1$d</string>"
+    <string name="list_item_headline_text">Item ID: %1$d</string>
+    <string name="list_item_supporting_text">Item Name: %1$s</string>
+    <string name="list_item_trailing_text">List ID: %1$d</string>
 </resources>
