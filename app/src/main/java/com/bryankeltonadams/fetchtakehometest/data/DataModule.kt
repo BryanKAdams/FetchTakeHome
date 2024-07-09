@@ -15,11 +15,30 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
+    /**
+     * https://developer.android.com/training/dependency-injection/hilt-testing
+     * @Module
+     * @TestInstallIn(
+     *     components = [SingletonComponent::class],
+     *     replaces = [AnalyticsModule::class]
+     * )
+     * abstract class FakeAnalyticsModule {
+     *
+     *   @Singleton
+     *   @Binds
+     *   abstract fun bindAnalyticsService(
+     *     fakeAnalyticsService: FakeAnalyticsService
+     *   ): AnalyticsService
+     * }
+     */
+    // this is needed because we are providing an implementation when requesting an interface
+    // we use an interface to allow for testability
     @Singleton
     @Provides
     fun provideItemsRemoteDataSource(httpClient: HttpClient): IItemsRemoteDataSource =
         ItemsRemoteDataSource(httpClient)
 
+    // same with this one
     @Singleton
     @Provides
     fun provideItemsRepository(
