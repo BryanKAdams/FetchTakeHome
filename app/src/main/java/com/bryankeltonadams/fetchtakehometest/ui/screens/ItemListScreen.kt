@@ -1,6 +1,7 @@
 package com.bryankeltonadams.fetchtakehometest.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -10,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,7 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bryankeltonadams.fetchtakehometest.R
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
@@ -87,49 +89,62 @@ fun ItemListScreen(
                 sectionedItems?.forEach {
                     // create a sticky header for each listId
                     stickyHeader {
-                        HorizontalDivider()
-                        ListItem(headlineContent = {
+                        /** something quirky I noticed with the Divider implementation is
+                        the gap between the Divider and ListItem isn't perfectly flush
+                        if you look closely you can see a bit of the items text bleed through
+                        I left this here to pinpoint it and show my attention for detail
+                        I've resolved this issue by just putting a border on the ListItem
+                        which technically does put borders on the sides as well
+                        but if I wanted to I could have created a customer modifier that
+                        only draws a border on the top or bottom.
+                        ^ have to uncomment below code and comment the new  ListItem to
+                        see what I mean
+                         */
+
+//                        HorizontalDivider()
+//                        ListItem(headlineContent = {
+//                            Text(
+//                                text = "List ${it.key}",
+//                                style = MaterialTheme.typography.titleLarge
+//                            )
+//                        })
+//                        HorizontalDivider()
+
+                        ListItem(modifier = Modifier.border(1.dp, Color.Black), headlineContent = {
                             Text(
                                 text = "List ${it.key}",
                                 style = MaterialTheme.typography.titleLarge
                             )
                         })
-                        HorizontalDivider()
                     }
                     // go through the items in the map and create a ListItem for each
                     items(it.value) { item ->
-                        ListItem(
-                            headlineContent = {
-                                item.id?.let { itemId ->
-                                    Text(
-                                        stringResource(
-                                            id = R.string.list_item_headline_text,
-                                            itemId
-                                        )
+                        ListItem(headlineContent = {
+                            item.id?.let { itemId ->
+                                Text(
+                                    stringResource(
+                                        id = R.string.list_item_headline_text, itemId
                                     )
-                                }
-                            },
-                            supportingContent = {
-                                item.name?.let { itemName ->
-                                    Text(
-                                        stringResource(
-                                            id = R.string.list_item_supporting_text,
-                                            itemName
-                                        )
+                                )
+                            }
+                        }, supportingContent = {
+                            item.name?.let { itemName ->
+                                Text(
+                                    stringResource(
+                                        id = R.string.list_item_supporting_text, itemName
                                     )
-                                }
-                            },
+                                )
+                            }
+                        },
                             // sort of redundant, but for the sake of displaying
                             // all of the data within the item.
                             trailingContent = {
                                 Text(
                                     stringResource(
-                                        id = R.string.list_item_trailing_text,
-                                        item.listId
+                                        id = R.string.list_item_trailing_text, item.listId
                                     )
                                 )
-                            }
-                        )
+                            })
                     }
                 }
             }
