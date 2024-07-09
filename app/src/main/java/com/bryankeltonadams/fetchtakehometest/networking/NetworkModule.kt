@@ -53,6 +53,7 @@ object NetworkModule {
     fun provideHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
             install(DefaultRequest) {
+                url("https://fetch-hiring.s3.amazonaws.com/")
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
             }
             install(ContentNegotiation) {

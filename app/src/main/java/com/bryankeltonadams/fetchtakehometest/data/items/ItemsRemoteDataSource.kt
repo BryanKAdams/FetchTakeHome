@@ -19,17 +19,28 @@ interface IItemsRemoteDataSource {
 @Singleton
 class ItemsRemoteDataSource @Inject constructor(
     private val client: HttpClient
-): IItemsRemoteDataSource {
+) : IItemsRemoteDataSource {
     override suspend fun getItems(): Result<List<Item>> {
         return try {
             Result.success(
-                client.get(urlString = "https://fetch-hiring.s3.amazonaws.com/hiring.json").body()
+                // base url is built into HttpClient
+                // I could have put the whole thing as the baseUrl
+                // but this would allow for flexibility of getting
+                // data from the same api for different endpoints
+                client.get("hiring.json").body()
             )
+            // catching this individually is not necessary since I'm
+            // returning the same Result object either way
+            // but I'm doing it for clarity and to demonstrate
+            // how one could possibly catch specific exceptions
         } catch (e: RedirectResponseException) {
+            // 3xx - responses
             Result.failure(e)
         } catch (e: ClientRequestException) {
+            // 4xx - responses
             Result.failure(e)
         } catch (e: ServerResponseException) {
+            // 5xx - responses
             Result.failure(e)
         } catch (e: Exception) {
             Result.failure(e)
