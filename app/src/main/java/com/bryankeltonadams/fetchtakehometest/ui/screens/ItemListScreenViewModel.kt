@@ -5,16 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.bryankeltonadams.fetchtakehometest.model.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ItemListScreenViewModel : ViewModel() {
+class ItemListScreenViewModel : IItemListScreenViewModel, ViewModel() {
 
     private val _itemListScreenUiState = MutableStateFlow(ItemListScreenUiState())
-    val itemListScreenUiState = _itemListScreenUiState.asStateFlow()
-
-    init {
+    override val itemListScreenUiState = _itemListScreenUiState.asStateFlow()
+    override fun loadItems() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val dummyItems = listOf(
@@ -45,7 +45,16 @@ class ItemListScreenViewModel : ViewModel() {
                     error = null
                 )
             }
-
         }
     }
+
+    init {
+        loadItems()
+    }
 }
+
+interface IItemListScreenViewModel {
+    val itemListScreenUiState: StateFlow<ItemListScreenUiState>
+    fun loadItems()
+}
+
