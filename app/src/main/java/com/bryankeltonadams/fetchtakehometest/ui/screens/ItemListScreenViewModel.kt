@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.bryankeltonadams.fetchtakehometest.data.items.IItemsRepository
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.SortedMap
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,70 +21,83 @@ class ItemListScreenViewModel @Inject constructor(
     private val _itemListScreenUiState = MutableStateFlow(ItemListScreenUiState())
     override val itemListScreenUiState = _itemListScreenUiState.asStateFlow()
 
-    override fun fetchAndHandleItemsResult() {
+
+    override fun refresh() {
         viewModelScope.launch {
-            // ktor functions are non blocking so we should not need
-            // to use Dispatchers.IO
-            val itemsResult = itemRepository.getNetworkItems()
-            handleItemsResult(itemsResult)
+            _itemListScreenUiState.update { it.copy(isRefreshing = true) }
+            fetchAndHandleItemsResult()
+            // if the error comes back fast, it will leave the drag handle there
+            delay(500)
+            _itemListScreenUiState.update { it.copy(isRefreshing = false) }
         }
     }
 
-    private fun filterItems(items: List<Item>): List<Item> {
-        return items.filter { !it.name.isNullOrBlank() }
+    override suspend fun fetchAndHandleItemsResult() {
+        val itemsResult = itemRepository.getNetworkItems()
+        handleItemsResult(itemsResult)
     }
 
-    override fun createSortedMap(items: List<Item>): SortedMap<Int, List<Item>> {
-        val sortedItems = items.sortedBy { it.name }
-        val groupedItems = sortedItems.groupBy { it.listId }.toSortedMap(
-            compareBy { it }
-        )
-        return groupedItems
+
+    override fun filteredAndSortedMap(items: List<Item>): Map<Int, List<Item>> {
+        val filteredAndSortedItems = items
+            .filter { !it.name.isNullOrBlank() } // Filter out items with blank or null names
+            .groupBy { it.listId } // Group by listId
+            .toSortedMap() // Ensure groups are sorted by listId
+            .mapValues { entry ->
+                entry.value.sortedBy { it.name } // Sort each group by name
+            }
+        return filteredAndSortedItems
     }
 
-    override suspend fun handleItemsResult(itemsResult: Result<List<Item>>?) {
-        if (itemsResult != null) {
-            if (itemsResult.isSuccess) {
-                val items = itemsResult.getOrNull()
-                if (items != null) {
-                    val groupedItems = createSortedMap(filterItems(items))
-                    _itemListScreenUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            sectionedItems = groupedItems
-                        )
-                    }
-                } else {
-                    _itemListScreenUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = itemsResult.exceptionOrNull()?.message
-                        )
-                    }
+    override fun handleItemsResult(itemsResult: Result<List<Item>>) {
+        if (itemsResult.isSuccess) {
+            val items = itemsResult.getOrNull()
+            if (items != null) {
+                val groupedItems = filteredAndSortedMap(items)
+
+                _itemListScreenUiState.update {
+                    it.copy(
+                        isLoading = false,
+                        sectionedItems = groupedItems,
+                        error = null
+                    )
+                }
+            } else {
+                _itemListScreenUiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = itemsResult.exceptionOrNull()?.message
+                    )
                 }
             }
         } else {
+            // errors specifically from ktor error
             _itemListScreenUiState.update {
                 it.copy(
                     isLoading = false,
-                    error = "Error fetching items"
+                    error = "Error fetching items. Ensure you have a stable internet connection and try pulling to refresh."
                 )
             }
         }
     }
 
     init {
-        fetchAndHandleItemsResult()
+        viewModelScope.launch {
+            fetchAndHandleItemsResult()
+        }
     }
 }
 
 interface IItemListScreenViewModel {
     val itemListScreenUiState: StateFlow<ItemListScreenUiState>
-    fun fetchAndHandleItemsResult()
 
-    fun createSortedMap(items: List<Item>): SortedMap<Int, List<Item>>
+    fun refresh()
 
-    suspend fun handleItemsResult(itemsResult: Result<List<Item>>?)
+    suspend fun fetchAndHandleItemsResult()
+
+    fun filteredAndSortedMap(items: List<Item>): Map<Int, List<Item>>
+
+    fun handleItemsResult(itemsResult: Result<List<Item>>)
 
 }
 

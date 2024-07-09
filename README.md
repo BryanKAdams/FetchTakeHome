@@ -20,6 +20,13 @@ This project is a Jetpack Compose project using Jetpack Navigation, Ktor(w/OkHtt
 Dependency Injection, Kotlin Coroutines (suspend functions and Flows), Material3 for U.I.
 KotlinX for serialization.
 
+Considerations:
+I considered keeping the dataset as a List<Item> instead of a Map<Int, Item> for the U.I.
+I could have sorted by name, groupedBy listId, and then flattened back into a list in order,
+I then could have checked the first occurrence of every listId within the list in order to attach
+the header a singular time, this would have prevented me from doing a forEach inside the u.i.
+but other methods would be required instead.
+
 Alternatives I'm familiar with:
 
 Ktor -> Retrofit, I decided to use Ktor in order to grow my familiarity with it and because I like
