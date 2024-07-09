@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bryankeltonadams.fetchtakehometest.model.Item
+import com.bryankeltonadams.fetchtakehometest.data.model.Item
 import java.util.SortedMap
 
 @Composable

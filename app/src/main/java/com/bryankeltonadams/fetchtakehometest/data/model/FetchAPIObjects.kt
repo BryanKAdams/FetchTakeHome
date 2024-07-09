@@ -1,4 +1,4 @@
-package com.bryankeltonadams.fetchtakehometest.model
+package com.bryankeltonadams.fetchtakehometest.data.model
 
 import kotlinx.serialization.Serializable
 

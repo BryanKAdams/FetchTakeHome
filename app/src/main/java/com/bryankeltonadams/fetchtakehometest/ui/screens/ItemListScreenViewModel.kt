@@ -2,7 +2,7 @@ package com.bryankeltonadams.fetchtakehometest.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bryankeltonadams.fetchtakehometest.model.Item
+import com.bryankeltonadams.fetchtakehometest.data.model.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
