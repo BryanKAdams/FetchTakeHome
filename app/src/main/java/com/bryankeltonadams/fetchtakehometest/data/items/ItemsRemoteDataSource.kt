@@ -1,7 +1,6 @@
 package com.bryankeltonadams.fetchtakehometest.data.items
 
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
-import dagger.Provides
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException

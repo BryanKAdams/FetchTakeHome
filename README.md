@@ -97,7 +97,7 @@ KotlinX for serialization.
 
 - **Hilt -> Koin**: I decided to use Hilt instead of Koin, this is the one dependency that breaks
   KMP support for this project, I would most likely refactor this later in the future. But I have a
-  strong familiarity with Hilt and it's also a more common D.I. library.
+  strong familiarity with Hilt and it's also a more common D.I. library for Android.
 
 - **KotlinX Serialization -> Moshi**: The production applications I work with at Fishbowl use Moshi,
   but I personally prefer KotlinX Serialization, especially when sometimes it's required anyway,
