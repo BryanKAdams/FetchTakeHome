@@ -119,7 +119,7 @@ KotlinX for serialization.
   the header a singular time, this would have prevented me from doing a `forEach` inside the u.i.
   but other methods would be required instead.
 
-### Alternative Libraries I'm familiar with:
+## Alternative Libraries I'm familiar with:
 
 - **Ktor -> Retrofit**: I decided to use Ktor in order to grow my familiarity with it and because I
   like using it for its Multiplatform support.
