@@ -46,6 +46,8 @@ enum class SnackbarType(
     val iconColor: Color,
     val iconBackgroundColor: Color,
 ) {
+    // if these were guaranteed to be a staple color palette I would add them
+    // to the theme instead
     INFO(
         Color(0xFFF1F7FC),
         Icons.Outlined.Info,
