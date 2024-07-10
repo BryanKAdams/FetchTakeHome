@@ -117,4 +117,3 @@ interface IItemListScreenViewModel {
     suspend fun getNetworkItemsResult(): Result<List<Item>>
 
 }
-
