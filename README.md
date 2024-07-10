@@ -111,7 +111,7 @@ KotlinX for serialization.
   storage and feature expansion, such as adding new items. Additionally, developing a REST API in
   Kotlin could further extend the app's capabilities.
 
-### Other Considerations:
+## Other Considerations:
 
 - I considered keeping the dataset as a `List<Item>` instead of a `Map<Int, Item>` for the U.I.
 - I could have sorted by name, groupedBy listId, and then flattened back into a list in order,
