@@ -36,7 +36,8 @@ release mobile OS.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the project up and running on your local machine for
+development and testing purposes.
 
 ### Prerequisites
 
@@ -48,7 +49,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Open a terminal.
 2. Change the current working directory to the location where you want the cloned directory.
-3. Type `git clone git@github.com:BryanKAdams/FetchTakeHome.git` and press **Enter** to create your local clone.
+3. Type `git clone git@github.com:BryanKAdams/FetchTakeHome.git` and press **Enter** to create your
+   local clone.
 
 ### Building the Project
 
@@ -61,13 +63,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Running Tests
 
-1. To run unit tests, right-click on the `test` folder in the Project view and select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
-2. To run Android Instrumentation tests, right-click on the `androidTest` folder and select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
+1. To run unit tests, right-click on the `test` folder in the Project view and
+   select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
+2. To run Android Instrumentation tests, right-click on the `androidTest` folder and
+   select `Run 'Tests in 'com.bryankeltonadams.fetchtakehometest...''`.
 
 ### Generating APK
 
 1. Select `Build` > `Build Bundle(s) / APK(s)` > `Build APK(s)`.
-2. Once the build is complete, Android Studio will notify you. The APK can be found in `projectname/app/build/outputs/apk/debug/app-debug.apk`.
+2. Once the build is complete, Android Studio will notify you. The APK can be found
+   in `projectname/app/build/outputs/apk/debug/app-debug.apk`.
 
 ### Installing APK on a Device
 
@@ -82,7 +87,31 @@ This project is a Jetpack Compose project using Jetpack Navigation, Ktor(w/OkHtt
 Dependency Injection, Kotlin Coroutines (suspend functions and Flows), Material3 for U.I., and
 KotlinX for serialization.
 
-### Considerations:
+## Stretch Goals
+
+### Considered
+
+- **Advanced Filtering and Sorting**: Allow users to dynamically customize views with more
+  sophisticated filtering and sorting options.
+- **Search Functionality**: Implement a search bar for querying items by name or other relevant
+  properties.
+- **Offline Support**: Enable the app to function without an internet connection by fetching and
+  storing data for offline use.
+- **Detail View**: Enhance user experience on tablets and desktops by introducing a detail view
+  through navigation or using `ListDetailPaneScaffold`.
+
+### Implemented
+
+- **Pull to Refresh**: Users can refresh content by pulling down, with the ability to retry after a
+  failure.
+- **Error Messaging**: A snackbar system has been implemented to display error messages to users.
+- **Navigation**: A navigation system has been set up, facilitating the addition of a detail view
+  and other navigational elements like a hamburger menu or bottom action bar.
+- **Dedicated Database/API**: Future enhancements could include using Firestore for persistent data
+  storage and feature expansion, such as adding new items. Additionally, developing a REST API in
+  Kotlin could further extend the app's capabilities.
+
+### Other Considerations:
 
 - I considered keeping the dataset as a `List<Item>` instead of a `Map<Int, Item>` for the U.I.
 - I could have sorted by name, groupedBy listId, and then flattened back into a list in order,

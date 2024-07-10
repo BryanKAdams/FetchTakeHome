@@ -2,8 +2,11 @@ package com.bryankeltonadams.fetchtakehometest.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bryankeltonadams.fetchtakehometest.R
 import com.bryankeltonadams.fetchtakehometest.data.items.IItemsRepository
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
+import com.bryankeltonadams.fetchtakehometest.ui.components.FetchSnackbarData
+import com.bryankeltonadams.fetchtakehometest.ui.components.SnackbarType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +33,10 @@ class ItemListScreenViewModel @Inject constructor(
             delay(500)
             _itemListScreenUiState.update { it.copy(isRefreshing = false) }
         }
+    }
+
+    override fun setSnackbarMessage(message: String?) {
+        _itemListScreenUiState.update { it.copy(fetchSnackbarData = null) }
     }
 
     override suspend fun fetchAndHandleItemsResult() {
@@ -59,14 +66,14 @@ class ItemListScreenViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         sectionedItems = groupedItems,
-                        error = null
+                        errorMessageResId = null,
                     )
                 }
             } else {
                 _itemListScreenUiState.update {
                     it.copy(
                         isLoading = false,
-                        error = itemsResult.exceptionOrNull()?.message
+                        errorMessageResId = R.string.list_item_empty_text
                     )
                 }
             }
@@ -75,7 +82,12 @@ class ItemListScreenViewModel @Inject constructor(
             _itemListScreenUiState.update {
                 it.copy(
                     isLoading = false,
-                    error = "Error fetching items. Ensure you have a stable internet connection and try pulling to refresh."
+                    errorMessageResId = R.string.list_item_error_text,
+                    fetchSnackbarData = FetchSnackbarData(
+                        type = SnackbarType.ERROR,
+                        titleResId = R.string.snackbar_error_fetching_items_title,
+                        messageResId = R.string.snackbar_error_fetching_items_message
+                    )
                 )
             }
         }
@@ -92,6 +104,8 @@ interface IItemListScreenViewModel {
     val itemListScreenUiState: StateFlow<ItemListScreenUiState>
 
     fun refresh()
+
+    fun setSnackbarMessage(message: String?)
 
     suspend fun fetchAndHandleItemsResult()
 

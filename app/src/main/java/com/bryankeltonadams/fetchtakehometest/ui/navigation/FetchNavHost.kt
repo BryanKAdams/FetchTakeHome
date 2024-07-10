@@ -1,6 +1,7 @@
 package com.bryankeltonadams.fetchtakehometest.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -20,16 +21,21 @@ object ItemList
 // i.e. it's not overkill, it's just planned architecture to allow the app to scale.
 
 @Composable
-fun FetchNavHost(navHostController: NavHostController = rememberNavController()) {
+fun FetchNavHost(
+    modifier: Modifier,
+    navHostController: NavHostController = rememberNavController(),
+    onShowSnackbar: (String) -> Unit
+) {
     NavHost(
+        modifier = modifier,
         navController = navHostController,
-        // Compose Navigation Beta allows for Type Safe Routing instead of using strings
         startDestination = ItemList
     ) {
+        // Compose Navigation Beta allows for Type Safe Routing instead of using strings
         composable<ItemList> {
             // move to dependency injection if time permits
             val filterViewModel = hiltViewModel<ItemListScreenViewModel>()
-            ItemListScreen(filterViewModel)
+            ItemListScreen(filterViewModel, onShowSnackbar)
         }
     }
 }

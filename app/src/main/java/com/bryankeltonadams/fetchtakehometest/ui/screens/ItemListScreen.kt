@@ -4,7 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -13,25 +13,41 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bryankeltonadams.fetchtakehometest.R
 import com.bryankeltonadams.fetchtakehometest.data.model.Item
+import com.bryankeltonadams.fetchtakehometest.ui.components.FetchSnackbarData
+import kotlinx.serialization.json.Json
 
 @Composable
 // some code bases name this function ItemListRoute, since it's composable that lives
 // within the navigation graph and pulls the data and actions from the view model
 // I prefer to just use the same name but a different signature
-fun ItemListScreen(itemListScreenViewModel: ItemListScreenViewModel) {
+fun ItemListScreen(
+    itemListScreenViewModel: ItemListScreenViewModel, onShowSnackbar: (String) -> Unit
+) {
     val uiState by itemListScreenViewModel.itemListScreenUiState.collectAsStateWithLifecycle()
+    LaunchedEffect(uiState.fetchSnackbarData) {
+        uiState.fetchSnackbarData?.let { snackbarData ->
+            val sbData = Json.encodeToString(FetchSnackbarData.serializer(), snackbarData)
+            onShowSnackbar(sbData)
+            itemListScreenViewModel.setSnackbarMessage(null)
+        }
+
+    }
     ItemListScreen(
         itemListScreenUiState = uiState, onRefresh = itemListScreenViewModel::refresh
     )
@@ -41,7 +57,8 @@ data class ItemListScreenUiState(
     val sectionedItems: Map<Int, List<Item>>? = null,
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val error: String? = null,
+    val errorMessageResId: Int? = null,
+    val fetchSnackbarData: FetchSnackbarData? = null
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -69,22 +86,37 @@ fun ItemListScreen(
             ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-        } else if (itemListScreenUiState.error != null) {
+        } else if (itemListScreenUiState.errorMessageResId != null && itemListScreenUiState.sectionedItems.isNullOrEmpty()) {
             Box(
                 modifier = Modifier
+                    .padding(8.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.Center), text = itemListScreenUiState.error
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = itemListScreenUiState.errorMessageResId),
+                    textAlign = TextAlign.Center,
                 )
             }
 
+        } else if (itemListScreenUiState.sectionedItems.isNullOrEmpty()) {
+            // this shouldn't happen, but would sort of simulate if you updated the docuemnt
+            // to an empty array
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.list_item_empty_text),
+                )
+            }
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .safeDrawingPadding()
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 sectionedItems?.forEach {
                     // create a sticky header for each listId
@@ -112,7 +144,7 @@ fun ItemListScreen(
 
                         ListItem(modifier = Modifier.border(1.dp, Color.Black), headlineContent = {
                             Text(
-                                text = "List ${it.key}",
+                                text = stringResource(id = R.string.list_header_title, it.key),
                                 style = MaterialTheme.typography.titleLarge
                             )
                         })
@@ -148,6 +180,75 @@ fun ItemListScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun ItemListScreenSuccessPreview() {
+    ItemListScreen(itemListScreenUiState = ItemListScreenUiState(
+        sectionedItems = mapOf(
+            1 to listOf(
+                Item(1, "Cute Dog", 1), Item(2, "Cute Cat", 1), Item(3, "Cute Fish", 1)
+            ), 2 to listOf(
+                Item(4, "Cute Cow", 2), Item(5, "Cute Horse", 2), Item(6, "Cute Pig", 2)
+            ), 3 to listOf(
+                Item(7, "Cute Elephant", 3),
+                Item(8, "Cute Giraffe", 3),
+                Item(9, "Cute Monkey", 3)
+            ), 4 to listOf(
+                Item(10, "Cute Bear", 4), Item(11, "Cute Lion", 4), Item(12, "Cute Tiger", 4)
+            ), 5 to listOf(
+                Item(13, "Cute Penguin", 5),
+                Item(14, "Cute Eagle", 5),
+                Item(15, "Cute Flamingo", 5)
+            )
+        ), isLoading = false, isRefreshing = false, errorMessageResId = null
+    ), onRefresh = {})
+}
+
+@Composable
+@Preview
+fun ItemListScreenLoadingPreview() {
+    Scaffold {
+        Box(modifier = Modifier.padding(it)) {
+            ItemListScreen(itemListScreenUiState = ItemListScreenUiState(
+                sectionedItems = null,
+                isLoading = true,
+                isRefreshing = false,
+                errorMessageResId = null
+            ), onRefresh = {})
+        }
+    }
+}
+
+@Composable
+@Preview
+fun ItemListScreenErrorPreview() {
+    Scaffold {
+        Box(modifier = Modifier.padding(it)) {
+            ItemListScreen(itemListScreenUiState = ItemListScreenUiState(
+                sectionedItems = null,
+                isLoading = false,
+                isRefreshing = false,
+                errorMessageResId = R.string.list_item_error_text
+            ), onRefresh = {})
+        }
+    }
+}
+
+@Composable
+@Preview
+fun ItemListScreenSuccessNoItemsPreview() {
+    Scaffold {
+        Box(modifier = Modifier.padding(it)) {
+            ItemListScreen(itemListScreenUiState = ItemListScreenUiState(
+                sectionedItems = null,
+                isLoading = false,
+                isRefreshing = false,
+                errorMessageResId = null
+            ), onRefresh = {})
         }
     }
 }
