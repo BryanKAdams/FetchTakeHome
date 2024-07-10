@@ -154,3 +154,5 @@ KotlinX for serialization.
 
 - **Jetpack Compose**: I could have written this with Views, but I much prefer the way Compose is,
   and it's the future in my opinion.
+
+![Screenshot 1](screenshots/loaded%20list.png "Main Screen")
