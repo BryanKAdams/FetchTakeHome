@@ -142,7 +142,7 @@ fun ItemListScreen(
 //                        })
 //                        HorizontalDivider()
 
-                        ListItem(modifier = Modifier.border(1.dp, Color.Black), headlineContent = {
+                        ListItem(modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground), headlineContent = {
                             Text(
                                 text = stringResource(id = R.string.list_header_title, it.key),
                                 style = MaterialTheme.typography.titleLarge
