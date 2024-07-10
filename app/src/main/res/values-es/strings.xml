@@ -4,9 +4,16 @@
 <!--    I'm not bilingual, just demonstrating the power of string resources-->
     <string name="app_name">Fetch Prueba para Llevar a Casa"</string>
 
+
+    <!--    List Item Content-->
     <string name="list_header_title">Lista %1$d</string>
     <string name="list_item_headline_text">ID del ítem: %1$d</string>
     <string name="list_item_supporting_text">Nombre del ítem: %1$s</string>
     <string name="list_item_trailing_text">ID de la lista: %1$d</string>
+    <string name="list_item_empty_text">No se encontraron elementos</string>
+    <string name="list_item_error_text">Error al obtener los elementos, asegúrate de tener una conexión a internet estable y prueba a actualizar deslizando hacia abajo.</string>
+    <!--Snackbar Errors-->
+    <string name="snackbar_error_fetching_items_title">Error al obtener los elementos</string>
+    <string name="snackbar_error_fetching_items_message">Verifica tu conexión a internet y desliza hacia abajo para intentar de nuevo.</string>
 
 </resources>

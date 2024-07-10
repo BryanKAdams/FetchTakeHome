@@ -5,8 +5,17 @@
     that it could be a string instead. %1$s is flexible and you can still pass in
     a number or string.
      -->
+
+    <!--    List Item Content-->
     <string name="list_header_title">List %1$d</string>"
     <string name="list_item_headline_text">Item ID: %1$d</string>
     <string name="list_item_supporting_text">Item Name: %1$s</string>
     <string name="list_item_trailing_text">List ID: %1$d</string>
+    <string name="list_item_empty_text">No items found</string>
+    <string name="list_item_error_text">Error fetching items, ensure you have a stable internet connection and try pulling to refresh.</string>
+
+
+    <!--Snackbar Errors-->
+    <string name="snackbar_error_fetching_items_title">Error fetching items</string>
+    <string name="snackbar_error_fetching_items_message">Check your internet connection and pull to refresh to try again.</string>
 </resources>
