@@ -28,20 +28,21 @@ class ItemListScreenViewModel @Inject constructor(
     override fun refresh() {
         viewModelScope.launch {
             _itemListScreenUiState.update { it.copy(isRefreshing = true) }
-            fetchAndHandleItemsResult()
+            val itemsResult = getNetworkItemsResult()
+            handleItemsResult(itemsResult)
             // if the error comes back fast, it will leave the drag handle there
             delay(500)
             _itemListScreenUiState.update { it.copy(isRefreshing = false) }
         }
     }
 
-    override fun setSnackbarMessage(message: String?) {
+    override fun clearSnackbarData() {
         _itemListScreenUiState.update { it.copy(fetchSnackbarData = null) }
     }
 
-    override suspend fun fetchAndHandleItemsResult() {
-        val itemsResult = itemRepository.getNetworkItems()
-        handleItemsResult(itemsResult)
+
+    override suspend fun getNetworkItemsResult(): Result<List<Item>> {
+        return itemRepository.getNetworkItems()
     }
 
 
@@ -95,7 +96,8 @@ class ItemListScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fetchAndHandleItemsResult()
+            val itemsResult = getNetworkItemsResult()
+            handleItemsResult(itemsResult)
         }
     }
 }
@@ -105,13 +107,14 @@ interface IItemListScreenViewModel {
 
     fun refresh()
 
-    fun setSnackbarMessage(message: String?)
+    fun clearSnackbarData()
 
-    suspend fun fetchAndHandleItemsResult()
 
     fun filteredAndSortedMap(items: List<Item>): Map<Int, List<Item>>
 
     fun handleItemsResult(itemsResult: Result<List<Item>>)
+
+    suspend fun getNetworkItemsResult(): Result<List<Item>>
 
 }
 

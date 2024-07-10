@@ -44,7 +44,7 @@ fun ItemListScreen(
         uiState.fetchSnackbarData?.let { snackbarData ->
             val sbData = Json.encodeToString(FetchSnackbarData.serializer(), snackbarData)
             onShowSnackbar(sbData)
-            itemListScreenViewModel.setSnackbarMessage(null)
+            itemListScreenViewModel.clearSnackbarData()
         }
 
     }

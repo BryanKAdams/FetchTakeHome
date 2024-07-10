@@ -63,8 +63,19 @@ dependencies {
 
     // hilt dependency injection
     implementation(libs.hilt.android)
+    implementation(libs.core.ktx)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+
+    // mock
+    testImplementation(libs.mockk)
+    testImplementation(libs.slf4j.nop)
+
+    //android testing and coroutines testing
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

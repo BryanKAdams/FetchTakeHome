@@ -81,6 +81,17 @@ development and testing purposes.
 3. Open a terminal and navigate to the project's root directory.
 4. Run `./gradlew installDebug` to install the debug APK on your device.
 
+### Running Unit Tests from the Command Line
+
+After installing the APK on a device, you can also run the unit tests from the command line to
+verify the correctness of your application logic. This method is useful for automated testing
+environments or when you prefer not to use the Android Studio UI.
+
+1. Open a terminal.
+2. Navigate to the root directory of your project.
+3. Run the following command:
+   `./gradlew test`
+
 ## Developer Notes:
 
 This project is a Jetpack Compose project using Jetpack Navigation, Ktor(w/OkHttp engine), Hilt for
