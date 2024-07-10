@@ -155,4 +155,4 @@ KotlinX for serialization.
 - **Jetpack Compose**: I could have written this with Views, but I much prefer the way Compose is,
   and it's the future in my opinion.
 
-![Screenshot 1](screenshots/Loaded%20List.png "Loaded Success" = 250x)
+![Screenshot 1](screenshots/Loaded%20List.png =250x "Loaded Success")
